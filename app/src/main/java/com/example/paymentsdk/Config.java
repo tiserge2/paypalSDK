@@ -14,7 +14,7 @@ public class Config {
     //Braintree Provided Nonce for sandbox testing
     public static final String NONCE              = "fake-valid-nonce";
     //Tokenization key
-    public static String TOKENZATION_KEY    = "sandbox_x6sbt3jm_8mrh2hk3n57nfqff";
+    public static String TOKENZATION_KEY          = "sandbox_x6sbt3jm_8mrh2hk3n57nfqff";
     //Request code
     public static final int REQUEST_CODE          = 11;
 }

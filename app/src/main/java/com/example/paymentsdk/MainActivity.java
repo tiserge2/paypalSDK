@@ -44,13 +44,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    * When the user click on the checkout button handleCheckout
-    * Will be responsible to take the required action based on
-    * certain conditon. First we check if the amount text input
-    * is not empty to proceed with the Braintree Drop-In UI
-    * */
+     * When the user click on the checkout button handleCheckout
+     * Will be responsible to take the required action based on
+     * certain conditon. First we check if the amount text input
+     * is not empty to proceed with the Braintree Drop-In UI
+     * */
     public void handleCheckout(View v) {
-        if(TextUtils.isEmpty(editAmount.getText().toString())) {
+        if (TextUtils.isEmpty(editAmount.getText().toString())) {
             Toast.makeText(getApplicationContext(), "Amount cannot be empty.", Toast.LENGTH_SHORT).show();
         } else {
             //Proceed with Drop In UI
@@ -62,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    * We need to create a DropInRequest in order to have the Paypal payment
-    * Option display with the DropInUI
-    * */
+     * We need to create a DropInRequest in order to have the Paypal payment
+     * Option display with the DropInUI
+     * */
     public void setupDropInUI() {
         // we need to use a thread to avoid any blocking issue while generating the token
         new Thread(new Runnable() {
@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    * configure the braintree gateway with the credentials
-    * */
+     * configure the braintree gateway with the credentials
+     * */
     public void initializeGateway() {
         gateway = new BraintreeGateway(
                 Environment.SANDBOX,
@@ -92,9 +92,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    * Once the client has entered information about his paypal, a Nonce is sent to the main activity
-    * With the REQUEST_CODE if everything was good, otherwise we shall have other code
-    * */
+     * Once the client has entered information about his paypal, a Nonce is sent to the main activity
+     * With the REQUEST_CODE if everything was good, otherwise we shall have other code
+     * */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 // handle errors here, an exception may be available in
                 assert data != null;
                 Exception error = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                System.out.println(error.getMessage());
                 //enable the paypal button again
                 paypalButton.setEnabled(true);
                 paypalButton.setText(R.string.checkout);
@@ -121,12 +122,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    * Here we configure the Transaction with the fake nonce as we are testing
-    * We get the amount from user input and add it to the request.
-    * This process should have been done from server side,
-    * So using a thread keep us from having issue and also mimic
-    * The server side for us
-    * */
+     * Here we configure the Transaction with the fake nonce as we are testing
+     * We get the amount from user input and add it to the request.
+     * This process should have been done from server side,
+     * So using a thread keep us from having issue and also mimic
+     * The server side for us
+     * */
     public void setupTransaction() {
         //get the amount entered by the user
         final String amount = editAmount.getText().toString();
@@ -143,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
                                         .amount(new BigDecimal(amount))
                                         .paymentMethodNonce(Config.NONCE)
                                         .options()
-                                            .submitForSettlement(true)
-                                            .done();
+                                        .submitForSettlement(true)
+                                        .done();
                                 final Result<Transaction> saleResult = gateway.transaction().sale(request);
                                 if (saleResult.isSuccess()) {
                                     // if the transaction has been setup we show an alert information dialog to the user
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                                                     .setTitle("Payment Successful")
                                                     .setMessage("Transaction ID: " + transaction.getId() +
                                                             "\nAmount: " + transaction.getAmount() + " USD" +
+                                                            "\nDate: " + transaction.getCreatedAt().getTime() +
                                                             "\nStatus: " + transaction.getStatus())
                                                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
@@ -175,8 +177,6 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             // if any other error while processing the payment we show a message to user
-                                            System.out.println("======> Message: " + saleResult.getMessage());
-                                            System.out.println("======> Message: " + saleResult.getTarget());
                                             new AlertDialog.Builder(MainActivity.this)
                                                     .setTitle("Transaction error")
                                                     .setMessage("Message: " + saleResult.getMessage())
