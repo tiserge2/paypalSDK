@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PaymentSDK</string>
+    <string name="checkout">Checkout</string>
+    <string name="enter_amount">Enter amount</string>
+    <string name="processing">Processing…</string>
+    <string name="Checkout">CHECKOUT</string>
 </resources>
